@@ -1,24 +1,36 @@
-# :checkered_flag: NOME DO PROJETO
+# :checkered_flag: Camisas Web Store
 
-Breve descrição do que o seu projeto faz.
+Uma loja digital de camisas estampadas.
 
 ## :technologist: Membros da equipe
 
-Matrícula, nome e curso dos participantes.
+Augusto Vasconcellos Nogueira Diogenes - 495915 - Ciência de Computação MT
+
+XXXXX
 
 ## :people_holding_hands: Papéis ou tipos de usuário da aplicação
 
-Informe aqui os tipos de usuário que irão interagir com a aplicação. Ex: administrador, locador, locatario, usuário não logado.
+Usuário não logado: pode pesquisar e observar o catálogo de camisetas.
 
-> Tenha em mente que obrigatoriamente a aplicação deve possuir funcionalidades acessíveis a todos os tipos de usuário e outra funcionalidades restritas a certos tipos de usuários.
+Usuário logado: pode pesquisar e observar o catálogo de camisetas. Pode realizar e cancelar encomendas de camisetas disponíveis no catálogo.
+
+Administrador: pode pesquisar, observar, e alterar o catálogo de camisetas. Pode pesquisar, observar, e apagar perfís de usuário logado. Pode observar e cancelar encomendas de outros usuários.
 
 ## :spiral_calendar: Entidades ou tabelas do sistema
 
-Liste as principais entidades do sistema.
+Usuário.
+
+Camiseta.
+
+Encomenda de camiseta.
 
 ## :triangular_flag_on_post:	 Principais funcionalidades da aplicação
 
-Descreve ou liste brevemente as principais funcionalidades da aplicação que será desenvolvida. Destaque a funcionalidades que serão acessévies a todos os usuários e aquelas restriras a usuários logados.
+Usuários não registrados podem acessar o catálogo de camisetas.
+
+Usuários registrados podem encomendar camisetas no catálogo.
+
+Administradores podem alterar o catálogo, cancelar encomendas, e suspender usuários.
 
 
 ----
