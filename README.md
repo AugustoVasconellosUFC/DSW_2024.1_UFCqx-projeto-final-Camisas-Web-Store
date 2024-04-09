@@ -6,7 +6,7 @@ Uma loja digital de camisas estampadas.
 
 Augusto Vasconcellos Nogueira Diogenes - 495915 - Ciência de Computação MT
 
-XXXXX
+Leonardo Martins de Loiola - 553762 - Ciência de Computação MT
 
 ## :people_holding_hands: Papéis ou tipos de usuário da aplicação
 
