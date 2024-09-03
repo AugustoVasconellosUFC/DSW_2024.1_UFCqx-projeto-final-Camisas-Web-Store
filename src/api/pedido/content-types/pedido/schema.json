@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pedidos",
+  "info": {
+    "singularName": "pedido",
+    "pluralName": "pedidos",
+    "displayName": "Pedido"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Payment_approved": {
+      "type": "boolean"
+    },
+    "Order_date": {
+      "type": "datetime"
+    },
+    "Adress": {
+      "type": "string"
+    },
+    "CEP_code": {
+      "type": "integer"
+    },
+    "camiseta": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::camiseta.camiseta"
+    },
+    "Quantity": {
+      "type": "integer"
+    }
+  }
+}
