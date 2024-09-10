@@ -4,7 +4,8 @@
   "info": {
     "singularName": "camiseta",
     "pluralName": "camisetas",
-    "displayName": "Camiseta"
+    "displayName": "Camiseta",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,20 +13,24 @@
   "pluginOptions": {},
   "attributes": {
     "Image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     },
     "Stock": {
       "type": "integer"
     },
     "Product_name": {
       "type": "string"
+    },
+    "Price": {
+      "type": "float"
     }
   }
 }

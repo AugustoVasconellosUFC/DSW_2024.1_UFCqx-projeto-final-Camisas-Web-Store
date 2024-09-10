@@ -368,6 +368,7 @@ export interface ApiCamisetaCamiseta extends Schema.CollectionType {
     singularName: 'camiseta';
     pluralName: 'camisetas';
     displayName: 'Camiseta';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -376,6 +377,7 @@ export interface ApiCamisetaCamiseta extends Schema.CollectionType {
     Image: Attribute.Media;
     Stock: Attribute.Integer;
     Product_name: Attribute.String;
+    Price: Attribute.Float;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
