@@ -374,7 +374,7 @@ export interface ApiCamisetaCamiseta extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    Image: Attribute.Media;
+    Image: Attribute.Media & Attribute.Required;
     Stock: Attribute.Integer;
     Product_name: Attribute.String;
     Price: Attribute.Float;
@@ -396,12 +396,54 @@ export interface ApiCamisetaCamiseta extends Schema.CollectionType {
   };
 }
 
+export interface ApiCarrinhoCarrinho extends Schema.CollectionType {
+  collectionName: 'carrinhos';
+  info: {
+    singularName: 'carrinho';
+    pluralName: 'carrinhos';
+    displayName: 'Carrinho';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Quantidade: Attribute.Integer;
+    users_permissions_user: Attribute.Relation<
+      'api::carrinho.carrinho',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    Camiseta_carrinho: Attribute.Relation<
+      'api::carrinho.carrinho',
+      'oneToOne',
+      'api::camiseta.camiseta'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::carrinho.carrinho',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::carrinho.carrinho',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiPedidoPedido extends Schema.CollectionType {
   collectionName: 'pedidos';
   info: {
     singularName: 'pedido';
     pluralName: 'pedidos';
     displayName: 'Pedido';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -410,13 +452,23 @@ export interface ApiPedidoPedido extends Schema.CollectionType {
     Payment_approved: Attribute.Boolean;
     Order_date: Attribute.DateTime;
     Adress: Attribute.String;
-    CEP_code: Attribute.Integer;
-    camiseta: Attribute.Relation<
+    users_permissions_user: Attribute.Relation<
       'api::pedido.pedido',
-      'oneToOne',
-      'api::camiseta.camiseta'
+      'manyToOne',
+      'plugin::users-permissions.user'
     >;
-    Quantity: Attribute.Integer;
+    carrinhos: Attribute.Relation<
+      'api::pedido.pedido',
+      'oneToMany',
+      'api::carrinho.carrinho'
+    >;
+    CEP_code: Attribute.String;
+    Processing_payment: Attribute.Boolean;
+    pedido_items: Attribute.Relation<
+      'api::pedido.pedido',
+      'oneToMany',
+      'api::pedido-item.pedido-item'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -428,6 +480,46 @@ export interface ApiPedidoPedido extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::pedido.pedido',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPedidoItemPedidoItem extends Schema.CollectionType {
+  collectionName: 'pedido_items';
+  info: {
+    singularName: 'pedido-item';
+    pluralName: 'pedido-items';
+    displayName: 'Pedido_item';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Quantidade: Attribute.Integer;
+    camiseta: Attribute.Relation<
+      'api::pedido-item.pedido-item',
+      'oneToOne',
+      'api::camiseta.camiseta'
+    >;
+    pedido: Attribute.Relation<
+      'api::pedido-item.pedido-item',
+      'manyToOne',
+      'api::pedido.pedido'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::pedido-item.pedido-item',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::pedido-item.pedido-item',
       'oneToOne',
       'admin::user'
     > &
@@ -663,6 +755,53 @@ export interface PluginContentReleasesReleaseAction
   };
 }
 
+export interface PluginI18NLocale extends Schema.CollectionType {
+  collectionName: 'i18n_locale';
+  info: {
+    singularName: 'locale';
+    pluralName: 'locales';
+    collectionName: 'locales';
+    displayName: 'Locale';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 50;
+        },
+        number
+      >;
+    code: Attribute.String & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUsersPermissionsPermission
   extends Schema.CollectionType {
   collectionName: 'up_permissions';
@@ -796,6 +935,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    carrinhos: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::carrinho.carrinho'
+    >;
     pedidos: Attribute.Relation<
       'plugin::users-permissions.user',
       'oneToMany',
@@ -818,53 +962,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
-export interface PluginI18NLocale extends Schema.CollectionType {
-  collectionName: 'i18n_locale';
-  info: {
-    singularName: 'locale';
-    pluralName: 'locales';
-    collectionName: 'locales';
-    displayName: 'Locale';
-    description: '';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
-  };
-  attributes: {
-    name: Attribute.String &
-      Attribute.SetMinMax<
-        {
-          min: 1;
-          max: 50;
-        },
-        number
-      >;
-    code: Attribute.String & Attribute.Unique;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'plugin::i18n.locale',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'plugin::i18n.locale',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -876,15 +973,17 @@ declare module '@strapi/types' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'api::camiseta.camiseta': ApiCamisetaCamiseta;
+      'api::carrinho.carrinho': ApiCarrinhoCarrinho;
       'api::pedido.pedido': ApiPedidoPedido;
+      'api::pedido-item.pedido-item': ApiPedidoItemPedidoItem;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
+      'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
-      'plugin::i18n.locale': PluginI18NLocale;
     }
   }
 }

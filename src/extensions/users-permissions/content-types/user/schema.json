@@ -65,10 +65,17 @@
       "inversedBy": "users",
       "configurable": false
     },
+    "carrinhos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::carrinho.carrinho",
+      "mappedBy": "users_permissions_user"
+    },
     "pedidos": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::pedido.pedido"
+      "target": "api::pedido.pedido",
+      "mappedBy": "users_permissions_user"
     }
   }
 }
