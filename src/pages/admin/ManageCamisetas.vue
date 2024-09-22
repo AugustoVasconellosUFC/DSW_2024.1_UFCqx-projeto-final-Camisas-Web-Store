@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Camiseta } from '@/types/Camiseta'
-import CamisetaCard from '@/components/CamisetaCard.vue'
 import api from '@/api/api'
+import CamisetaEditCard from '@/components/CamisetaEditCard.vue'
 import { ref } from 'vue'
 import { useLoginStore } from '@/stores/store'
 import router from '@/router/vuerouter'
@@ -19,39 +19,39 @@ async function getCamisetas() {
   }
 }
 
-async function handleCarrinho(camisetaCarrinho: Camiseta) {
-  try {
-    const resposta = await api.post(
-      '/carrinhos',
-      {
-        data: {
-          Quantidade: 1,
-          users_permissions_user: store.getId,
-          Camiseta_carrinho: camisetaCarrinho
-        }
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${store.getToken}`
-        }
-      }
-    )
+getCamisetas()
 
-    router.push(`cart/${store.getId}`)
+async function deletarCamiseta(id: number) {
+  try {
+    const resposta = await api.delete(`/camisetas/${id}`, {
+      headers: {
+        Authorization: `Bearer ${store.getToken}`
+      }
+    })
+
+    getCamisetas()
     console.log(resposta)
   } catch (error) {
     console.log(error)
+    console.log(store.getToken)
   }
 }
-
-getCamisetas()
 </script>
 
 <template>
+  <div class="d-flex justify-content-center">
+    <button
+      type="button"
+      class="btn btn-success btn-lg text-white btn-add"
+      @click="router.push('edit/0')"
+    >
+      Adicionar
+    </button>
+  </div>
   <div class="album py-5 bg-body-tertiary">
     <div class="container">
-      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3">
-        <CamisetaCard
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-2 g-3">
+        <CamisetaEditCard
           v-for="(camiseta, index) in camisetas"
           :key="index"
           :Product_name="camiseta.Product_name"
@@ -59,9 +59,16 @@ getCamisetas()
           :Image="camiseta.Image"
           :id="camiseta.id"
           :Price="camiseta.Price"
-          @carrinho="handleCarrinho"
-        ></CamisetaCard>
+          @delete="deletarCamiseta"
+        />
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.btn-add {
+  width: 12rem;
+  height: 4rem;
+}
+</style>

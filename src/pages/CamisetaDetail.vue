@@ -1,61 +1,101 @@
 <script setup lang="ts">
-import type { Roupa } from '@/types/Roupa'
+import type { Camiseta } from '@/types/Camiseta'
 import { ref } from 'vue'
 import api from '@/api/api'
 import { useRoute } from 'vue-router'
 import { transformarLink } from '@/composables/TransformarLink'
+import { getCamiseta } from '@/composables/GetCamiseta'
+import router from '@/router/vuerouter'
+import { useLoginStore } from '@/stores/store'
 
-const camiseta = ref<Roupa>({} as Roupa)
+const camiseta = ref<Camiseta>()
 const rota = useRoute()
+const loading = ref<boolean>(true)
+const store = useLoginStore()
+const outOfOrder = ref(false)
 
-async function getCamiseta() {
+;(async () => {
   try {
-    const resposta = await api.get('/camisetas/' + rota.params.id + '?populate=Image')
-    camiseta.value = resposta.data.data
-    console.log(camiseta.value)
+    camiseta.value = await getCamiseta(Number(rota.params.id))
+
+    if (camiseta.value.Stock <= 0) {
+      outOfOrder.value = true
+    }
+
+    loading.value = false
+    console.log(camiseta)
+  } catch (error) {
+    console.log(error)
+  }
+})()
+
+async function handleCarrinho() {
+  try {
+    if (camiseta.value!.Stock <= 0) {
+      return
+    }
+
+    const resposta = await api.post(
+      '/carrinhos',
+      {
+        data: {
+          Quantidade: 1,
+          users_permissions_user: store.getId,
+          Camiseta_carrinho: camiseta.value
+        }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${store.getToken}`
+        }
+      }
+    )
+
+    router.push({
+      name: 'CarrinhoPage',
+      params: {
+        id: store.getId
+      }
+    })
+    console.log(resposta)
   } catch (error) {
     console.log(error)
   }
 }
-
-getCamiseta()
 </script>
 
 <template>
-  <div class="row">
-    <aside class="col-7">
-      <img class="image-detail" :src="transformarLink(camiseta.Image.url)" alt="" />
-    </aside>
-    <main class="col-5">
-      <h1>{{ camiseta.Product_name }}</h1>
+  <div v-if="loading" class="d-flex justify-content-center align-items-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only"></span>
+    </div>
+  </div>
 
-      <h3 class="text-success my-3">Em estoque: {{ camiseta.Stock }}</h3>
+  <div class="row" v-else>
+    <aside class="col-7">
+      <img class="image-detail" :src="transformarLink(camiseta!.Image.url)" alt="" />
+    </aside>
+    <!-- //exclamação após "camiseta" para informar ao typescript que a variável nunca vai ser undefined ao ser renderizada, já que o loading será renderizado no lugar-->
+    <main class="col-5">
+      <h1>{{ camiseta!.Product_name }}</h1>
+
+      <h3 class="text-success my-3">Em estoque: {{ camiseta!.Stock }}</h3>
 
       <h4 class="my-3">
-        R$44,99
+        R${{ camiseta!.Price }}
         <span class="text-muted"> por unidade </span>
       </h4>
 
-      <div class="btn-group" role="group">
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" />
-        <label class="btn btn-outline-dark rounded-0" for="btnradio1">PP</label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" />
-        <label class="btn btn-outline-dark rounded-0" for="btnradio2">P</label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" checked />
-        <label class="btn btn-outline-dark rounded-0" for="btnradio3">M</label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio4" />
-        <label class="btn btn-outline-dark rounded-0" for="btnradio4">G</label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio5" />
-        <label class="btn btn-outline-dark rounded-0" for="btnradio5">GG</label>
-      </div>
-
-      <button type="button" class="my-4 btn btn-dark rounded-0 d-block">
+      <button
+        type="button"
+        class="my-4 btn btn-dark rounded-0 d-block"
+        :class="{ disabled: camiseta!.Stock <= 0 }"
+        @click="handleCarrinho"
+      >
         <h2>Adicionar ao Carrinho</h2>
       </button>
+
+      <p v-if="outOfOrder" class="text-danger">Esgotado</p>
     </main>
   </div>
 </template>
