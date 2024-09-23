@@ -3,6 +3,9 @@ import ItensPage from '../ItensPage.vue'
 import { useLoginStore } from '@/stores/store'
 import { ref } from 'vue'
 import api from '@/api/api'
+import type { Camiseta } from '@/types/Camiseta'
+import type { Pedido_item } from '@/types/Pedido_item'
+import type { Pedido } from '@/types/Pedido'
 
 const store = useLoginStore()
 const inputUsuario = ref(0)
@@ -19,7 +22,20 @@ function buscarUsuario() {
 
 async function aprovarPedido(idPedido: number) {
   try {
-    console.log(idPedido)
+    const resposta2 = await api.get(
+      `/pedidos/${idPedido}?populate[pedido_items][populate][0]=camiseta`,
+      {
+        headers: {
+          Authorization: `Bearer ${store.getToken}`
+        }
+      }
+    )
+    const pedido: Pedido = resposta2.data.data
+
+    if (!pedido.Processing_payment) {
+      return
+    }
+
     const resposta = await api.put(
       `/pedidos/${idPedido}`,
       {
@@ -34,6 +50,12 @@ async function aprovarPedido(idPedido: number) {
         }
       }
     )
+
+    const respostaData = resposta2.data.data
+
+    const pedidosStock: Pedido_item[] = respostaData.pedido_items
+    await reduceStock(pedidosStock)
+
     updatePage()
     success.value = 'O pedido foi aprovado com sucesso.'
   } catch (e) {
@@ -42,9 +64,44 @@ async function aprovarPedido(idPedido: number) {
   }
 }
 
+async function reduceStock(pedidosStock: Pedido_item[]) {
+  for (let i = 0; i < pedidosStock.length; i++) {
+    const camisetaStock: Camiseta = pedidosStock[i].camiseta
+    if (camisetaStock != null || camisetaStock != undefined) {
+      const res3 = await api.put(
+        `/camisetas/${camisetaStock.id}`,
+        {
+          data: {
+            Stock: camisetaStock.Stock - pedidosStock[i].Quantidade
+          }
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${store.getToken}`
+          }
+        }
+      )
+
+      console.log(res3)
+    }
+  }
+}
+
 async function negarPedido(idPedido: number) {
   try {
-    console.log(idPedido)
+    const resposta2 = await api.get(
+      `/pedidos/${idPedido}?populate[pedido_items][populate][0]=camiseta`,
+      {
+        headers: {
+          Authorization: `Bearer ${store.getToken}`
+        }
+      }
+    )
+    const pedidoNegado: Pedido = resposta2.data.data
+
+    if (!pedidoNegado.Processing_payment) {
+      return
+    }
     const resposta = await api.put(
       `/pedidos/${idPedido}`,
       {

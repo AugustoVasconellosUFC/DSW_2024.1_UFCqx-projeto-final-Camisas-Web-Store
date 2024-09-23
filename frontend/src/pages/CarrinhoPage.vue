@@ -131,7 +131,7 @@ async function handlePedido() {
       removeFromCart(carrinhos.value[i].id, carrinhos.value[i].Camiseta_carrinho.Price)
       // console.log(resposta2)
     }
-    reduceStock()
+
     success.value = 'Seu pedido foi feito com sucesso! Aguarde para que ele seja aprovado.'
   } catch (e) {
     error.value =
@@ -191,27 +191,6 @@ function countPreco() {
 
 function formatarPreco(preco: number) {
   return preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })
-}
-
-async function reduceStock() {
-  for (let i = 0; i < carrinhos.value!.length; i++) {
-    const camisetaTemp = carrinhos.value![i].Camiseta_carrinho
-    const res = api.put(
-      `camisetas/${camisetaTemp.id}`,
-      {
-        data: {
-          Stock: camisetaTemp.Stock - carrinhos.value![i].Quantidade
-        }
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${store.getToken}`
-        }
-      }
-    )
-
-    console.log(res)
-  }
 }
 </script>
 
