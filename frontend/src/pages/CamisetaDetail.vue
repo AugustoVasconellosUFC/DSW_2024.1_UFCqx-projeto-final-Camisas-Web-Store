@@ -25,8 +25,9 @@ const success = ref('')
     if (camiseta.value.Stock <= 0) {
       outOfOrder.value = true
     }
-  } catch (error) {
-    console.log(error)
+  } catch (e) {
+    console.log(e)
+    error.value = 'Ocorreu um erro ao carregar o item. Por favor tente novamente'
   } finally {
     loading.value = false
   }

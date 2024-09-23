@@ -33,6 +33,7 @@ async function getCamisetasEdit() {
     imagemDisplay.value = camiseta.value.Image.url
   } catch (error) {
     console.log(error)
+    isError.value = true
   } finally {
     loading.value = false
   }

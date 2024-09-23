@@ -16,8 +16,9 @@ async function getCamisetas() {
   try {
     const resposta = await api.get('/camisetas?populate=*')
     camisetas.value = resposta.data.data
-  } catch (error) {
-    console.log(error)
+  } catch (e) {
+    console.log(e)
+    error.value = 'Ocorreu um erro ao carregar os itens. Por favor tente novamente.'
   }
 }
 
@@ -48,8 +49,9 @@ async function handleCarrinho(camisetaCarrinho: Camiseta) {
     )
 
     success.value = 'O item foi adicionada ao carrinho!'
-  } catch (error) {
-    console.log(error)
+  } catch (e) {
+    console.log(e)
+    error.value = 'Ocorreu um erro ao adicionar o item ao carrinho. Por favor tente novamente.'
   }
 }
 
