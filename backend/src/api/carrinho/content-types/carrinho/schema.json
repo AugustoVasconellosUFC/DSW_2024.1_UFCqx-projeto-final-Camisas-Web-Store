@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "carrinhos",
+  "info": {
+    "singularName": "carrinho",
+    "pluralName": "carrinhos",
+    "displayName": "Carrinho",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Quantidade": {
+      "type": "integer"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "carrinhos"
+    },
+    "Camiseta_carrinho": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::camiseta.camiseta"
+    }
+  }
+}

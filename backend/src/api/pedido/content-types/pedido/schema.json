@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pedidos",
+  "info": {
+    "singularName": "pedido",
+    "pluralName": "pedidos",
+    "displayName": "Pedido",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Payment_approved": {
+      "type": "boolean"
+    },
+    "Order_date": {
+      "type": "datetime"
+    },
+    "Adress": {
+      "type": "string"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "pedidos"
+    },
+    "carrinhos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::carrinho.carrinho"
+    },
+    "CEP_code": {
+      "type": "string"
+    },
+    "Processing_payment": {
+      "type": "boolean"
+    },
+    "pedido_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pedido-item.pedido-item",
+      "mappedBy": "pedido"
+    }
+  }
+}
