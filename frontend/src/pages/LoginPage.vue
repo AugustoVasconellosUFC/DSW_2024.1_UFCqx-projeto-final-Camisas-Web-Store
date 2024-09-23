@@ -18,15 +18,12 @@ const error = ref('')
 const success = ref('')
 
 async function fazerLogin() {
-  console.log('LOGIN')
   try {
     loading.value = true
     const resposta = await api.post('/auth/local', {
       identifier: emailLogin.value,
       password: senhaLogin.value
     })
-
-    console.log(resposta)
 
     const res = await api.get('/users/me', {
       headers: {

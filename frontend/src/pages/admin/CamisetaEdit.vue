@@ -124,7 +124,6 @@ async function createCamiseta() {
       }
     })
 
-    console.log(resposta)
     isSuccess.value = true
   } catch (error) {
     isError.value = true

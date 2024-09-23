@@ -18,7 +18,6 @@ async function getCamisetas() {
     loading.value = true
     const resposta = await api.get('/camisetas?populate=*')
     camisetas.value = resposta.data.data
-    console.log(camisetas.value)
   } catch (error) {
     console.log(error)
   } finally {
@@ -37,7 +36,6 @@ async function deletarCamiseta(id: number) {
     })
 
     getCamisetas()
-    console.log(resposta)
     success.value = 'O item foi deletado com sucesso.'
   } catch (e) {
     console.log(e)

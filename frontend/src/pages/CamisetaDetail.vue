@@ -25,8 +25,6 @@ const success = ref('')
     if (camiseta.value.Stock <= 0) {
       outOfOrder.value = true
     }
-
-    console.log(camiseta)
   } catch (error) {
     console.log(error)
   } finally {
@@ -65,7 +63,6 @@ async function handleCarrinho() {
     )
 
     success.value = 'O item foi adicionada ao carrinho!'
-    console.log(resposta)
   } catch (e) {
     error.value = 'Ocorreu um erro. Por favor, tente novamente em alguns instantes.'
     console.log(e)

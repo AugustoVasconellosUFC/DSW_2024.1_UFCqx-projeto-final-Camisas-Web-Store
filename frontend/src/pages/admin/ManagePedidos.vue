@@ -81,8 +81,6 @@ async function reduceStock(pedidosStock: Pedido_item[]) {
           }
         }
       )
-
-      console.log(res3)
     }
   }
 }

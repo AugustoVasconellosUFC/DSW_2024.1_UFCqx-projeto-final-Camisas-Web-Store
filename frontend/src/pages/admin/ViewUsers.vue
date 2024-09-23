@@ -19,7 +19,6 @@ async function getUser() {
       }
     })
     users.value = resposta.data
-    console.log(users.value)
   } catch (e) {
     console.log(e)
     error.value = 'Ocorreu um erro ao carregar os usuários. Por favor tente novamente.'

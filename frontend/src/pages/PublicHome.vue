@@ -16,7 +16,6 @@ async function getCamisetas() {
   try {
     const resposta = await api.get('/camisetas?populate=*')
     camisetas.value = resposta.data.data
-    console.log(camisetas.value)
   } catch (error) {
     console.log(error)
   }
@@ -49,7 +48,6 @@ async function handleCarrinho(camisetaCarrinho: Camiseta) {
     )
 
     success.value = 'O item foi adicionada ao carrinho!'
-    console.log(resposta)
   } catch (error) {
     console.log(error)
   }

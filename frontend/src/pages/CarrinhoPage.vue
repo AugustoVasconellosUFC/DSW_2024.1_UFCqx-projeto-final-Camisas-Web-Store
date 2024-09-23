@@ -29,8 +29,6 @@ async function getCarrinho() {
       }
     )
 
-    console.log(resposta)
-
     carrinhos.value = resposta.data.carrinhos
 
     countPreco()
@@ -53,7 +51,6 @@ async function removeFromCart(id: Number, preco: number) {
     precosMap.value.delete(id)
     totalPreco.value -= preco
     getCarrinho()
-    console.log(resposta)
   } catch (e) {
     error.value = 'Ocorreu um erro ao remover do carrinho. Por favor, tente novamente.'
     console.log(e)
@@ -69,7 +66,6 @@ async function removeUndefined(id: Number) {
     })
 
     getCarrinho()
-    console.log(resposta)
   } catch (e) {
     error.value = 'Ocorreu um erro ao remover do carrinho. Por favor, tente novamente.'
     console.log(e)
@@ -78,6 +74,11 @@ async function removeUndefined(id: Number) {
 
 async function handlePedido() {
   try {
+    if (carrinhos.value == undefined || carrinhos.value.length <= 0) {
+      error.value = 'O carrinho está vazio.'
+      return
+    }
+
     loading.value = true
     if (carrinhos.value?.length == 0 || carrinhos.value == undefined) {
       throw Error
@@ -109,7 +110,6 @@ async function handlePedido() {
     for (let i = 0; i < carrinhos.value.length; i++) {
       const camisetaFor = carrinhos.value[i].Camiseta_carrinho
       if (camisetaFor == null) {
-        console.log('AAAAAAAAAA')
         camisetaFor == undefined
       }
       const resposta2 = await api.post(
@@ -129,7 +129,6 @@ async function handlePedido() {
       )
 
       removeFromCart(carrinhos.value[i].id, carrinhos.value[i].Camiseta_carrinho.Price)
-      // console.log(resposta2)
     }
 
     success.value = 'Seu pedido foi feito com sucesso! Aguarde para que ele seja aprovado.'
@@ -149,7 +148,6 @@ async function editQuantidade(idCarrinho: number, quantidadeNova: number, estoqu
       quantidadeNova = 1
     }
 
-    console.log('ID CARRINH: ' + idCarrinho + 'QUANTIDADE: ' + String(quantidadeNova))
     const resposta = await api.put(
       `/carrinhos/${idCarrinho}`,
       {
@@ -248,7 +246,9 @@ function formatarPreco(preco: number) {
       </div>
 
       <p class="fw-bold">Preço total: R$ {{ formatarPreco(totalPreco) }}</p>
-      <button type="submit" class="btn btn-primary">Comprar</button>
+      <button type="submit" class="btn btn-primary" :disabled="carrinhos!.length <= 0">
+        Comprar
+      </button>
     </form>
     <div class="me-5">
       <div class="cart-card">
